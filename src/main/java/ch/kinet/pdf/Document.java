@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Stefan Rothe
+ * Copyright (C) 2022 - 2023 by Stefan Rothe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,9 @@ package ch.kinet.pdf;
 
 import ch.kinet.Binary;
 import ch.kinet.http.Data;
+import static ch.kinet.pdf.Alignment.Center;
+import static ch.kinet.pdf.Alignment.Left;
+import static ch.kinet.pdf.Alignment.Right;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
@@ -32,7 +35,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-import com.itextpdf.layout.property.VerticalAlignment;
 
 public final class Document {
 
@@ -45,6 +47,7 @@ public final class Document {
     private com.itextpdf.layout.Document page;
     private Table table;
     private com.itextpdf.layout.borders.Border border;
+    private VerticalAlignment verticalAlignment;
 
     public static final Document createPortrait(String fileName) {
         try {
@@ -79,6 +82,7 @@ public final class Document {
         fontSize = 10f;
         bold = false;
         border = new SolidBorder(borderWidth);
+        verticalAlignment = VerticalAlignment.Top;
     }
 
     public Data toData() {
@@ -98,7 +102,7 @@ public final class Document {
         }
 
         Cell cell = new Cell();
-        cell.setVerticalAlignment(VerticalAlignment.BOTTOM);
+        cell.setVerticalAlignment(translate(verticalAlignment));
         cell.setBorder(com.itextpdf.layout.borders.Border.NO_BORDER);
         cell.setPadding(0.5f);
         if (image != null && !image.isNull()) {
@@ -114,7 +118,7 @@ public final class Document {
         }
 
         Cell cell = new Cell();
-        cell.setVerticalAlignment(VerticalAlignment.TOP);
+        cell.setVerticalAlignment(translate(verticalAlignment));
         cell.setBorder(com.itextpdf.layout.borders.Border.NO_BORDER);
         cell.setPadding(0.5f);
         for (Border b : borders) {
@@ -185,6 +189,10 @@ public final class Document {
         this.fontSize = fontSize;
     }
 
+    public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
+        this.verticalAlignment = verticalAlignment;
+    }
+
     private Image createImage(Binary image, float maxWidth, float maxHeight) {
         ImageData data = ImageDataFactory.create(image.toBytes());
         Image img = new Image(data);
@@ -217,6 +225,19 @@ public final class Document {
                 return TextAlignment.RIGHT;
             default:
                 return TextAlignment.LEFT;
+        }
+    }
+
+    private com.itextpdf.layout.property.VerticalAlignment translate(VerticalAlignment align) {
+        switch (align) {
+            case Bottom:
+                return com.itextpdf.layout.property.VerticalAlignment.BOTTOM;
+            case Middle:
+                return com.itextpdf.layout.property.VerticalAlignment.MIDDLE;
+            case Top:
+                return com.itextpdf.layout.property.VerticalAlignment.TOP;
+            default:
+                return com.itextpdf.layout.property.VerticalAlignment.TOP;
         }
     }
 
