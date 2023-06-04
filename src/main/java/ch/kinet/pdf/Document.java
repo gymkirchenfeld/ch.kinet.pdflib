@@ -17,7 +17,7 @@
 package ch.kinet.pdf;
 
 import ch.kinet.Binary;
-import ch.kinet.http.Data;
+import ch.kinet.Data;
 import static ch.kinet.pdf.Alignment.Center;
 import static ch.kinet.pdf.Alignment.Left;
 import static ch.kinet.pdf.Alignment.Right;
@@ -93,7 +93,7 @@ public final class Document {
             System.out.println("page is null");
         }
 
-        return Data.pdf(Binary.from(buffer.toByteArray()), fileName);
+        return Data.pdf(buffer.toByteArray(), fileName);
     }
 
     public void addCell(Binary image, float maxWidth, float maxHeight) {

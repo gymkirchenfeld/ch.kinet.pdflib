@@ -16,8 +16,8 @@
  */
 package ch.kinet.csv;
 
+import ch.kinet.Data;
 import ch.kinet.Date;
-import ch.kinet.http.Data;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
