@@ -18,9 +18,6 @@ package ch.kinet.pdf;
 
 import ch.kinet.Binary;
 import ch.kinet.Data;
-import static ch.kinet.pdf.Alignment.Center;
-import static ch.kinet.pdf.Alignment.Left;
-import static ch.kinet.pdf.Alignment.Right;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
@@ -31,9 +28,7 @@ import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 
 public final class Document {
@@ -65,6 +60,10 @@ public final class Document {
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    static float cmToPoint(float cm) {
+        return cm * 28.3464566929f;
     }
 
     private Document(String fileName, boolean rotate) throws Exception {
@@ -112,9 +111,9 @@ public final class Document {
         table.addCell(cell);
     }
 
-    public void addCell(String text, Alignment alignment, Border... borders) {
+    public Paragraph addCell(String text, Alignment alignment, Border... borders) {
         if (table == null) {
-            return;
+            return null;
         }
 
         Cell cell = new Cell();
@@ -138,8 +137,10 @@ public final class Document {
             }
         }
 
-        cell.add(createParagraph(text, alignment));
+        Paragraph result = createParagraph(text, alignment);
+        cell.add(result.imp);
         table.addCell(cell);
+        return result;
     }
 
     public void addImage(Binary image, float maxWidth, float maxHeight) {
@@ -163,8 +164,10 @@ public final class Document {
         page.setMargins(marginTopBottom, marginLeftRight, marginTopBottom, marginLeftRight);
     }
 
-    public void addParagraph(String text, Alignment alignment) {
-        page.add(createParagraph(text, alignment));
+    public Paragraph addParagraph(String text, Alignment alignment) {
+        Paragraph result = createParagraph(text, alignment);
+        page.add(result.imp);
+        return result;
     }
 
     public void beginTable(float... columnWidths) {
@@ -206,26 +209,13 @@ public final class Document {
         }
 
         Paragraph result = new Paragraph(text);
-        result.setTextAlignment(translate(alignment));
+        result.setTextAlignment(alignment);
         result.setFontSize(fontSize);
         if (bold) {
             result.setBold();
         }
 
         return result;
-    }
-
-    private TextAlignment translate(Alignment align) {
-        switch (align) {
-            case Center:
-                return TextAlignment.CENTER;
-            case Left:
-                return TextAlignment.LEFT;
-            case Right:
-                return TextAlignment.RIGHT;
-            default:
-                return TextAlignment.LEFT;
-        }
     }
 
     private com.itextpdf.layout.property.VerticalAlignment translate(VerticalAlignment align) {
@@ -239,9 +229,5 @@ public final class Document {
             default:
                 return com.itextpdf.layout.property.VerticalAlignment.TOP;
         }
-    }
-
-    private static float cmToPoint(float cm) {
-        return cm * 28.3464566929f;
     }
 }
