@@ -54,7 +54,7 @@ public final class CsvWriter {
 
     public void append(Date content) {
         if (content != null) {
-            csv.append(content.formatDMY());
+            csv.append(Date.formatDMY(content));
         }
 
         nextColumn();
