@@ -17,7 +17,8 @@
 package ch.kinet.csv;
 
 import ch.kinet.Data;
-import ch.kinet.Date;
+import ch.kinet.Util;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,9 +53,9 @@ public final class CsvWriter {
         nextColumn();
     }
 
-    public void append(Date content) {
+    public void append(LocalDate content) {
         if (content != null) {
-            csv.append(Date.formatDMY(content));
+            csv.append(Util.formatDateDMY(content));
         }
 
         nextColumn();
