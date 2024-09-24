@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Stefan Rothe
+ * Copyright (C) 2022 - 2024 by Stefan Rothe
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,7 @@
 package ch.kinet.csv;
 
 import ch.kinet.Data;
-import ch.kinet.Util;
+import ch.kinet.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +55,7 @@ public final class CsvWriter {
 
     public void append(LocalDate content) {
         if (content != null) {
-            csv.append(Util.formatDateDMY(content));
+            csv.append(Date.formatDMY(content));
         }
 
         nextColumn();
