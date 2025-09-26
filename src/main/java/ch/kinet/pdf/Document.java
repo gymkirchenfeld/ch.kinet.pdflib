@@ -105,7 +105,10 @@ public final class Document {
         cell.setBorder(com.itextpdf.layout.borders.Border.NO_BORDER);
         cell.setPadding(0.5f);
         if (image != null && !image.isNull()) {
-            cell.add(createImage(image, maxWidth, maxHeight));
+            Image img = createImage(image, maxWidth, maxHeight);
+            if (img != null) {
+                cell.add(img);
+            }
         }
 
         table.addCell(cell);
@@ -148,7 +151,10 @@ public final class Document {
             return;
         }
 
-        page.add(createImage(image, maxWidth, maxHeight));
+        Image img = createImage(image, maxWidth, maxHeight);
+        if (img != null) {
+            page.add(img);
+        }
     }
 
     public void addPage(float marginLeftRight, float marginTopBottom) {
@@ -197,10 +203,15 @@ public final class Document {
     }
 
     private Image createImage(Binary image, float maxWidth, float maxHeight) {
-        ImageData data = ImageDataFactory.create(image.toBytes());
-        Image img = new Image(data);
-        img.scaleToFit(maxWidth, maxHeight);
-        return img;
+        try {
+            ImageData data = ImageDataFactory.create(image.toBytes());
+            Image img = new Image(data);
+            img.scaleToFit(maxWidth, maxHeight);
+            return img;
+        }
+        catch (com.itextpdf.io.IOException ex) {
+            return null;
+        }
     }
 
     private Paragraph createParagraph(String text, Alignment alignment) {
